@@ -29,7 +29,7 @@ tag game-info
 				" with the "
 				<a href="http://github.com/imba/imba" target="_blank"> "Imba"
 				" Language. Example borrowoed from the "
-				<a href="https://codingheroes.io"> "codingheroes.io"
+				<a href="https://codingheroes.io" target="_blank"> "codingheroes.io"
 				"Master Javascript Course"
 
 tag player-panel
