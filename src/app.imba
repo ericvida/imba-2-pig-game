@@ -93,7 +93,7 @@ tag pig-game
 			if dice isnt 1
 				turnScore += dice
 			else
-				loseScore
+				self.loseScore()
 	
 	def render
 		<self>

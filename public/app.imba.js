@@ -1245,7 +1245,7 @@ class PigGameComponent extends imba.tags.get('component','ImbaElement') {
 			if (dice !== 1) {
 				return turnScore += dice;
 			} else {
-				return loseScore;
+				return this.loseScore();
 			}		}	}
 	
 	render(){
