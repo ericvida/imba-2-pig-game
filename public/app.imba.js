@@ -1144,7 +1144,7 @@ class GameInfoComponent extends imba.tags.get('component','ImbaElement') {
 		b$0 || (t$2.href="http://github.com/imba/imba");
 		b$0 || (t$2.target="_blank");
 		(v$1=" Language. Example borrowoed from the ",v$1===c$0.p || (c$0.p_ = t$1.insert$(c$0.p=v$1,0,c$0.p_)));
-		b$0 || (t$2=imba.createElement('a',0,t$1,null,"codingheroes.io",null));
+		b$0 || (t$2=imba.createElement('a',0,t$1,null,"codingheroes.io ",null));
 		b$0 || (t$2.href="https://codingheroes.io");
 		b$0 || (t$2.target="_blank");
 		(v$1="Master Javascript Course",v$1===c$0.q || (c$0.q_ = t$1.insert$(c$0.q=v$1,0,c$0.q_)));
