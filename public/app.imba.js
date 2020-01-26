@@ -1138,13 +1138,15 @@ class GameInfoComponent extends imba.tags.get('component','ImbaElement') {
 		(v$1="Coded by ",v$1===c$0.n || (c$0.n_ = t$1.insert$(c$0.n=v$1,0,c$0.n_)));
 		b$0 || (t$2=imba.createElement('a',0,t$1,null,"Eric",null));
 		b$0 || (t$2.href="https://github.com/iamtirado/imba-2-pig-game");
+		b$0 || (t$2.target="_blank");
 		(v$1=" with the ",v$1===c$0.o || (c$0.o_ = t$1.insert$(c$0.o=v$1,0,c$0.o_)));
 		b$0 || (t$2=imba.createElement('a',0,t$1,null,"Imba",null));
 		b$0 || (t$2.href="http://github.com/imba/imba");
+		b$0 || (t$2.target="_blank");
 		(v$1=" Language. Example borrowoed from the ",v$1===c$0.p || (c$0.p_ = t$1.insert$(c$0.p=v$1,0,c$0.p_)));
-		b$0 || (t$2=imba.createElement('a',0,t$1,null,"Jonas.io",null));
-		b$0 || (t$2.href="https://jonas.io");
-		(v$1=" Javascript course",v$1===c$0.q || (c$0.q_ = t$1.insert$(c$0.q=v$1,0,c$0.q_)));
+		b$0 || (t$2=imba.createElement('a',0,t$1,null,"codingheroes.io",null));
+		b$0 || (t$2.href="https://codingheroes.io");
+		(v$1="Master Javascript Course",v$1===c$0.q || (c$0.q_ = t$1.insert$(c$0.q=v$1,0,c$0.q_)));
 		t$0.close$(d$0);
 		return t$0;
 	}

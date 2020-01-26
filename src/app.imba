@@ -25,12 +25,12 @@ tag game-info
 						"to add your lot to your score and end your turn."
 			<p.credits>
 				"Coded by "
-				<a href="https://github.com/iamtirado/imba-2-pig-game"> "Eric"
+				<a href="https://github.com/iamtirado/imba-2-pig-game" target="_blank"> "Eric"
 				" with the "
-				<a href="http://github.com/imba/imba"> "Imba"
+				<a href="http://github.com/imba/imba" target="_blank"> "Imba"
 				" Language. Example borrowoed from the "
-				<a href="https://jonas.io"> "Jonas.io"
-				" Javascript course"
+				<a href="https://codingheroes.io"> "codingheroes.io"
+				"Master Javascript Course"
 
 tag player-panel
 	@player
