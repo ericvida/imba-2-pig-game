@@ -1,3 +1,5 @@
+# TODO: Hold score not showing
+# TODO: Lost lot, doesn't switch players.
 let activePlayer = 0
 let targetScore = 200
 let totalScore = [0,0]
@@ -23,9 +25,9 @@ tag game-info
 						"to add your lot to your score and end your turn."
 			<p.credits>
 				"Coded by "
-				<a href="https://github.com/iamtirado/pig-game"> "Eric"
+				<a href="https://github.com/iamtirado/imba-2-pig-game"> "Eric"
 				" with the "
-				<a href="http://imba.io"> "Imba"
+				<a href="http://github.com/imba/imba"> "Imba"
 				" Language. Example borrowoed from the "
 				<a href="https://jonas.io"> "Jonas.io"
 				" Javascript course"
@@ -84,7 +86,7 @@ tag pig-game
 		self.nextPlayer()
 	def loseScore
 		turnScore = 0
-		hasWon(activePlayer)
+		self.hasWon(activePlayer)
 		self.nextPlayer()
 	def rollDice
 		if playing
@@ -94,7 +96,6 @@ tag pig-game
 				turnScore += dice
 			else
 				self.loseScore()
-	
 	def render
 		<self>
 			<div.wrapper.clearfix>

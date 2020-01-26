@@ -1104,6 +1104,8 @@ imba$1.createSVGElement = function (name,bitflags,parent,flags,text,sfc){
 
 imba.inlineStyles(":root{--third:rgba(105,36,166,1.00);--first:rgba(255,89,69,1.00);--second:rgba(255,220,0,1.00);--white:#fff;--gray:#f0f0f0;--mediumgray:#606060;--dark:#444444;--shadow:rgba(10,10,0,.1);}*{margin:0;padding:0;box-sizing:border-box;}.clearfix::after{content:\"\";display:table;clear:both;}body{background-color:var(--third);}pig-game{width:100%;background:var(--first);background-size:cover;background-position:center;font-family:Lato;font-weight:300;min-height:100vh;color:var(--dark);}.wrapper{width:1000px;position:absolute;top:35%;left:50%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%);background-color:var(--white);box-shadow:0px 10px 50px var(--shadow);}player-panel{width:50%;float:left;height:600px;padding:100px;background-color:var(--white);}.player-name{font-size:40px;text-align:center;text-transform:uppercase;-webkit-letter-spacing:2px;-moz-letter-spacing:2px;-ms-letter-spacing:2px;letter-spacing:2px;font-weight:100;margin-top:20px;margin-bottom:10px;position:relative;}.player-score{text-align:center;font-size:80px;font-weight:100;color:var(--first);margin-bottom:130px;}.active{background-color:var(--gray);}.active .player-name{font-weight:300;}.active .player-name::after{content:\"X\";font-size:47px;position:absolute;color:var(--first);top:-7px;right:10px;}.player-current-box{background-color:var(--first);color:var(--white);width:40%;margin:0 auto;padding:12px;text-align:center;}.player-current-label{text-transform:uppercase;margin-bottom:10px;font-size:12px;color:var(--gray);}.player-current-score{font-size:30px;}.hidden{display:none;}.button-wrapper{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;height:200px;position:absolute;left:50%;-webkit-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);width:200px;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;bottom:0;}button{width:200px;color:var(--dark);background:none;border:none;font-family:Lato;font-size:20px;text-transform:uppercase;cursor:pointer;font-weight:300;-webkit-transition:background-color 0.3s,color 0.3s;transition:background-color 0.3s,color 0.3s;}button:hover{font-weight:600;}button:hover i{margin-right:20px;}button:focus{outline:none;}i{color:var(--first);display:inline-block;margin-right:15px;font-size:32px;line-height:1;vertical-align:text-top;margin-top:-4px;-webkit-transition:margin 0.3s;transition:margin 0.3s;}.btn-new{top:45px;}.btn-roll{top:403px;}.btn-hold{top:467px;}.dice{position:absolute;left:50%;top:160px;-webkit-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);height:130px;box-shadow:0px 10px 60px var(--shadow);display:block;}.winner{background-color:var(--gray);}.winner .player-name{font-weight:300;color:var(--first);}game-info{position:absolute;top:600px;width:100%;color:var(--gray);text-align:center;display:block;}game-info a{color:var(--second);}.rules{background-color:var(--mediumgray);color:var(--white);text-align:left;padding:1em 2em;margin-bottom:1em;}\n");
 var $1 = new WeakMap();
+// TODO: Hold score not showing
+// TODO: Lost lot, doesn't switch players.
 let activePlayer = 0;
 let targetScore = 200;
 let totalScore = [0,0];
@@ -1135,10 +1137,10 @@ class GameInfoComponent extends imba.tags.get('component','ImbaElement') {
 		t$1 = c$0.m || (c$0.m = t$1=imba.createElement('p',0,t$0,'credits',null,null));
 		(v$1="Coded by ",v$1===c$0.n || (c$0.n_ = t$1.insert$(c$0.n=v$1,0,c$0.n_)));
 		b$0 || (t$2=imba.createElement('a',0,t$1,null,"Eric",null));
-		b$0 || (t$2.href="https://github.com/iamtirado/pig-game");
+		b$0 || (t$2.href="https://github.com/iamtirado/imba-2-pig-game");
 		(v$1=" with the ",v$1===c$0.o || (c$0.o_ = t$1.insert$(c$0.o=v$1,0,c$0.o_)));
 		b$0 || (t$2=imba.createElement('a',0,t$1,null,"Imba",null));
-		b$0 || (t$2.href="http://imba.io");
+		b$0 || (t$2.href="http://github.com/imba/imba");
 		(v$1=" Language. Example borrowoed from the ",v$1===c$0.p || (c$0.p_ = t$1.insert$(c$0.p=v$1,0,c$0.p_)));
 		b$0 || (t$2=imba.createElement('a',0,t$1,null,"Jonas.io",null));
 		b$0 || (t$2.href="https://jonas.io");
@@ -1235,7 +1237,7 @@ class PigGameComponent extends imba.tags.get('component','ImbaElement') {
 	}
 	loseScore(){
 		turnScore = 0;
-		hasWon(activePlayer);
+		this.hasWon(activePlayer);
 		return this.nextPlayer();
 	}
 	rollDice(){
@@ -1247,7 +1249,6 @@ class PigGameComponent extends imba.tags.get('component','ImbaElement') {
 			} else {
 				return this.loseScore();
 			}		}	}
-	
 	render(){
 		var t$0, c$0, b$0, d$0, t$1, t$2, b$2, d$2, t$3, b$3, d$3, t$4, v$3, ak$$2, al$$2;
 		t$0=this;
