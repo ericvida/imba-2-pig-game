@@ -206,7 +206,7 @@ player-panel {
 }
 
 .active .player-name::after {
-	content: "X";
+	content: "\2022";
 	font-size: 47px;
 	position: absolute;
 	color: var(--first);
