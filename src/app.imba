@@ -26,7 +26,7 @@ tag game-info
 				<a href="https://github.com/iamtirado/imba-2-pig-game" target="_blank"> "Eric"
 				" with the "
 				<a href="http://github.com/imba/imba" target="_blank"> "Imba"
-				" Language. Example borrowoed from the "
+				" Language. Example borrowed from the "
 				<a href="https://codingheroes.io" target="_blank"> "codingheroes.io"
 				" Master Javascript Course"
 
