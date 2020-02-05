@@ -1,5 +1,3 @@
-# TODO: Hold score not showing
-# TODO: Lost lot, doesn't switch players.
 let activePlayer = 0
 let targetScore = 200
 let totalScore = [0,0]

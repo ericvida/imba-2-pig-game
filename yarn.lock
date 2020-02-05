@@ -355,7 +355,7 @@ has-values@^1.0.0:
     is-number "^3.0.0"
     kind-of "^4.0.0"
 
-imba-rollup@^1.0.3:
+imba-rollup@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/imba-rollup/-/imba-rollup-1.0.4.tgz#9c720647ba6448542d0384e508a1df98ba99b883"
   integrity sha512-gue2HU/yDqar5Kqysvr0U5NCzql53SO2AcnTqlTK+5TyagcTDUkJgbZOGEWTXhSVUWSqhwV/BOtXRwg8fjJIUQ==
@@ -372,6 +372,11 @@ imba@^2.0.0-alpha.22:
   version "2.0.0-alpha.22"
   resolved "https://registry.yarnpkg.com/imba/-/imba-2.0.0-alpha.22.tgz#753067e49f60a60059f6edc95d9b931f78d090aa"
   integrity sha512-Kk2PqHGaVPI3NKCG6T8PIZ5GyqbClh3R2DJelAwIvlVXM865m99rOjp/pXkSiKje2NyDAo14Qtc/amr6eH2QKw==
+
+imba@^2.0.0-alpha.23:
+  version "2.0.0-alpha.23"
+  resolved "https://registry.yarnpkg.com/imba/-/imba-2.0.0-alpha.23.tgz#e1a1383b88d194082a46c1aff9ee5b1a492fc0bf"
+  integrity sha512-QJepdooY8ml3QF3HY9jXFJfyQa+HRZe0R04SauQY3HYNdZ9SvHmQPU78Pn3cdTGGSvsUEyGcK56ziB61+9aUow==
 
 inherits@^2.0.3, inherits@~2.0.3:
   version "2.0.4"

@@ -1,3 +1,5 @@
+
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.head.appendChild(r) })(window.document);
 function iter$(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; }var raf = (typeof requestAnimationFrame !== 'undefined') ? requestAnimationFrame : (function(blk) { return setTimeout(blk,1000 / 60); });
 
 // Scheduler
@@ -262,6 +264,10 @@ function iter$$2(a){ return a ? (a.toIterable ? a.toIterable() : a) : []; }funct
 }
 extend$$1(DocumentFragment,{
 	
+	get parentContext(){
+		return this.up$ || this.__parent;
+	},
+	
 	// Called to make a documentFragment become a live fragment
 	setup$(flags,options){
 		this.__start = imba.document.createComment('start');
@@ -525,10 +531,10 @@ class IndexedTagFragment extends TagCollection {
 		}		return;
 	}
 } IndexedTagFragment.init$();
-function createLiveFragment(bitflags,options){
+function createLiveFragment(bitflags,options,par){
 	var el = document$1.createDocumentFragment();
 	el.setup$(bitflags,options);
-	return el;
+	if (par) { el.up$ = par; }	return el;
 }
 function createIndexedFragment(bitflags,parent){
 	return new IndexedTagFragment(bitflags,parent);
@@ -735,15 +741,17 @@ class ImbaElementRegistry {
 	
 	define(name,klass,options){
 		this.__types[name] = klass;
-		if (options && options.extends) {
-			CustomTagConstructors[name] = klass;
-		}		
+		
+		
 		let proto = klass.prototype;
 		if (proto.render && proto.end$ == Element.prototype.end$) {
 			proto.end$ = proto.render;
 		}		
-		root.customElements.define(name,klass);
-		return klass;
+		if (options && options.extends) {
+			CustomTagConstructors[name] = klass;
+		} else {
+			root.customElements.define(name,klass);
+		}		return klass;
 	}
 }
 imba$1.tags = new ImbaElementRegistry();
@@ -980,7 +988,7 @@ class ImbaElement extends HTMLElement {
 		if (name == '__' && !this.render) {
 			return this;
 		}		
-		return (slots_ = this.__slots)[name] || (slots_[name] = imba$1.createLiveFragment());
+		return (slots_ = this.__slots)[name] || (slots_[name] = imba$1.createLiveFragment(0,null,this));
 	}
 	
 	schedule(){
@@ -1069,12 +1077,13 @@ imba$1.createElement = function (name,bitflags,parent,flags,text,sfc){
 
 imba$1.createComponent = function (name,bitflags,parent,flags,text,sfc){
 	// the component could have a different web-components name?
-	var el = document.createElement(name);
-	
+	var el;	
 	if (CustomTagConstructors[name]) {
 		el = CustomTagConstructors[name].create$(el);
 		el.slot$ = ImbaElement.prototype.slot$;
 		el.__slots = {};
+	} else {
+		el = document.createElement(name);
 	}	
 	el.up$ = parent;
 	el.__f = bitflags;
@@ -1104,8 +1113,6 @@ imba$1.createSVGElement = function (name,bitflags,parent,flags,text,sfc){
 
 imba.inlineStyles(":root{--third:rgba(105,36,166,1.00);--first:rgba(255,89,69,1.00);--second:rgba(255,220,0,1.00);--white:#fff;--gray:#f0f0f0;--mediumgray:#606060;--dark:#444444;--shadow:rgba(10,10,0,.1);}*{margin:0;padding:0;box-sizing:border-box;}.clearfix::after{content:\"\";display:table;clear:both;}body{background-color:var(--third);}pig-game{width:100%;background:var(--first);background-size:cover;background-position:center;font-family:Lato;font-weight:300;min-height:100vh;color:var(--dark);}.wrapper{width:1000px;position:absolute;top:35%;left:50%;-webkit-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);transform:translate(-50%,-50%);background-color:var(--white);box-shadow:0px 10px 50px var(--shadow);}player-panel{width:50%;float:left;height:600px;padding:100px;background-color:var(--white);}.player-name{font-size:40px;text-align:center;text-transform:uppercase;-webkit-letter-spacing:2px;-moz-letter-spacing:2px;-ms-letter-spacing:2px;letter-spacing:2px;font-weight:100;margin-top:20px;margin-bottom:10px;position:relative;}.player-score{text-align:center;font-size:80px;font-weight:100;color:var(--first);margin-bottom:130px;}.active{background-color:var(--gray);}.active .player-name{font-weight:300;}.active .player-name::after{content:\"X\";font-size:47px;position:absolute;color:var(--first);top:-7px;right:10px;}.player-current-box{background-color:var(--first);color:var(--white);width:40%;margin:0 auto;padding:12px;text-align:center;}.player-current-label{text-transform:uppercase;margin-bottom:10px;font-size:12px;color:var(--gray);}.player-current-score{font-size:30px;}.hidden{display:none;}.button-wrapper{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;height:200px;position:absolute;left:50%;-webkit-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);width:200px;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;bottom:0;}button{width:200px;color:var(--dark);background:none;border:none;font-family:Lato;font-size:20px;text-transform:uppercase;cursor:pointer;font-weight:300;-webkit-transition:background-color 0.3s,color 0.3s;transition:background-color 0.3s,color 0.3s;}button:hover{font-weight:600;}button:hover i{margin-right:20px;}button:focus{outline:none;}i{color:var(--first);display:inline-block;margin-right:15px;font-size:32px;line-height:1;vertical-align:text-top;margin-top:-4px;-webkit-transition:margin 0.3s;transition:margin 0.3s;}.btn-new{top:45px;}.btn-roll{top:403px;}.btn-hold{top:467px;}.dice{position:absolute;left:50%;top:160px;-webkit-transform:translateX(-50%);-ms-transform:translateX(-50%);transform:translateX(-50%);height:130px;box-shadow:0px 10px 60px var(--shadow);display:block;}.winner{background-color:var(--gray);}.winner .player-name{font-weight:300;color:var(--first);}game-info{position:absolute;top:600px;width:100%;color:var(--gray);text-align:center;display:block;}game-info a{color:var(--second);}.rules{background-color:var(--mediumgray);color:var(--white);text-align:left;padding:1em 2em;margin-bottom:1em;}\n");
 var $1 = new WeakMap();
-// TODO: Hold score not showing
-// TODO: Lost lot, doesn't switch players.
 let activePlayer = 0;
 let targetScore = 200;
 let totalScore = [0,0];
@@ -1114,7 +1121,7 @@ let dice = 0;
 let playing = true;
 class GameInfoComponent extends imba.tags.get('component','ImbaElement') {
 	render(){
-		var t$0, c$0, b$0, d$0, t$1, t$2, t$3, v$3, t$4, v$4, v$1;
+		var t$0, c$0, b$0, d$0, t$1, t$2, t$3, t$4, v$4;
 		t$0=this;
 		t$0.open$();
 		c$0 = (b$0=d$0=1,t$0.$) || (b$0=d$0=0,t$0.$={});
@@ -1122,32 +1129,32 @@ class GameInfoComponent extends imba.tags.get('component','ImbaElement') {
 		b$0 || (t$2=imba.createElement('b',0,t$1,null,"How to Play:",null));
 		b$0 || (t$2=imba.createElement('ol',0,t$1,null,null,null));
 		t$3 = c$0.b || (c$0.b = t$3=imba.createElement('li',0,t$2,null,null,null));
-		(v$3="First player to reach ",v$3===c$0.c || (c$0.c_ = t$3.insert$(c$0.c=v$3,0,c$0.c_)));
-		t$4 = c$0.d || (c$0.d = t$4=imba.createElement('b',4096,t$3,null,null,null));
-		(v$4=targetScore,v$4===c$0.e || (c$0.e_ = t$4.insert$(c$0.e=v$4,0,c$0.e_)));
-		(v$3=" wins",v$3===c$0.f || (c$0.f_ = t$3.insert$(c$0.f=v$3,0,c$0.f_)));
-		t$3 = c$0.g || (c$0.g = t$3=imba.createElement('li',0,t$2,null,null,null));
-		(v$3="If Dice Rolls 1, ",v$3===c$0.h || (c$0.h_ = t$3.insert$(c$0.h=v$3,0,c$0.h_)));
+		b$0 || t$3.insert$("First player to reach ");
+		t$4 = c$0.c || (c$0.c = t$4=imba.createElement('b',4096,t$3,null,null,null));
+		(v$4=targetScore,v$4===c$0.d || (c$0.d_ = t$4.insert$(c$0.d=v$4,0,c$0.d_)));
+		b$0 || t$3.insert$(" wins");
+		t$3 = c$0.e || (c$0.e = t$3=imba.createElement('li',0,t$2,null,null,null));
+		b$0 || t$3.insert$("If Dice Rolls 1, ");
 		b$0 || (t$4=imba.createElement('b',0,t$3,null,"you lose your lot",null));
-		(v$3=", and your turn ends",v$3===c$0.i || (c$0.i_ = t$3.insert$(c$0.i=v$3,0,c$0.i_)));
-		t$3 = c$0.j || (c$0.j = t$3=imba.createElement('li',0,t$2,null,null,null));
-		(v$3="Press ",v$3===c$0.k || (c$0.k_ = t$3.insert$(c$0.k=v$3,0,c$0.k_)));
+		b$0 || t$3.insert$(", and your turn ends");
+		t$3 = c$0.f || (c$0.f = t$3=imba.createElement('li',0,t$2,null,null,null));
+		b$0 || t$3.insert$("Press ");
 		b$0 || (t$4=imba.createElement('b',0,t$3,null,'\"HOLD\" ',null));
-		(v$3="to add your lot to your score and end your turn.",v$3===c$0.l || (c$0.l_ = t$3.insert$(c$0.l=v$3,0,c$0.l_)));
-		t$1 = c$0.m || (c$0.m = t$1=imba.createElement('p',0,t$0,'credits',null,null));
-		(v$1="Coded by ",v$1===c$0.n || (c$0.n_ = t$1.insert$(c$0.n=v$1,0,c$0.n_)));
+		b$0 || t$3.insert$("to add your lot to your score and end your turn.");
+		t$1 = c$0.g || (c$0.g = t$1=imba.createElement('p',0,t$0,'credits',null,null));
+		b$0 || t$1.insert$("Coded by ");
 		b$0 || (t$2=imba.createElement('a',0,t$1,null,"Eric",null));
 		b$0 || (t$2.href="https://github.com/iamtirado/imba-2-pig-game");
 		b$0 || (t$2.target="_blank");
-		(v$1=" with the ",v$1===c$0.o || (c$0.o_ = t$1.insert$(c$0.o=v$1,0,c$0.o_)));
+		b$0 || t$1.insert$(" with the ");
 		b$0 || (t$2=imba.createElement('a',0,t$1,null,"Imba",null));
 		b$0 || (t$2.href="http://github.com/imba/imba");
 		b$0 || (t$2.target="_blank");
-		(v$1=" Language. Example borrowoed from the ",v$1===c$0.p || (c$0.p_ = t$1.insert$(c$0.p=v$1,0,c$0.p_)));
+		b$0 || t$1.insert$(" Language. Example borrowoed from the ");
 		b$0 || (t$2=imba.createElement('a',0,t$1,null,"codingheroes.io",null));
 		b$0 || (t$2.href="https://codingheroes.io");
 		b$0 || (t$2.target="_blank");
-		(v$1=" Master Javascript Course",v$1===c$0.q || (c$0.q_ = t$1.insert$(c$0.q=v$1,0,c$0.q_)));
+		b$0 || t$1.insert$(" Master Javascript Course");
 		t$0.close$(d$0);
 		return t$0;
 	}
@@ -1196,17 +1203,17 @@ class PlayerPanelComponent extends imba.tags.get('component','ImbaElement') {
 		t$0=this;
 		t$0.open$();
 		c$0 = (b$0=d$0=1,t$0.$) || (b$0=d$0=0,t$0.$={});
-		(v$0=(this.player === activePlayer && playing||undefined),v$0===c$0.s||(d$0|=2,c$0.s=v$0));
-		(v$0=(playing === false && this.player === activePlayer||undefined),v$0===c$0.u||(d$0|=2,c$0.u=v$0));
-		((!b$0||d$0&2) && t$0.flagSelf$((c$0.s ? `active` : '')+' '+(c$0.u ? `winner` : '')));
-		t$1 = c$0.v || (c$0.v = t$1=imba.createElement('div',4096,t$0,'player-name',null,null));
-		(imba.ctx=(c$0.w$ || (c$0.w$={_:t$1})),v$1=this.playerName(),v$1===c$0.w || (c$0.w_ = t$1.insert$(c$0.w=v$1,0,c$0.w_)));
-		t$1 = c$0.x || (c$0.x = t$1=imba.createElement('div',4096,t$0,'player-score',null,null));
-		(v$1=totalScore[this.player],v$1===c$0.y || (c$0.y_ = t$1.insert$(c$0.y=v$1,0,c$0.y_)));
+		(v$0=(this.player === activePlayer && playing||undefined),v$0===c$0.i||(d$0|=2,c$0.i=v$0));
+		(v$0=(playing === false && this.player === activePlayer||undefined),v$0===c$0.k||(d$0|=2,c$0.k=v$0));
+		((!b$0||d$0&2) && t$0.flagSelf$((c$0.i ? `active` : '')+' '+(c$0.k ? `winner` : '')));
+		t$1 = c$0.l || (c$0.l = t$1=imba.createElement('div',4096,t$0,'player-name',null,null));
+		(imba.ctx=(c$0.m$ || (c$0.m$={_:t$1})),v$1=this.playerName(),v$1===c$0.m || (c$0.m_ = t$1.insert$(c$0.m=v$1,0,c$0.m_)));
+		t$1 = c$0.n || (c$0.n = t$1=imba.createElement('div',4096,t$0,'player-score',null,null));
+		(v$1=totalScore[this.player],v$1===c$0.o || (c$0.o_ = t$1.insert$(c$0.o=v$1,0,c$0.o_)));
 		b$0 || (t$1=imba.createElement('div',0,t$0,'player-current-box',null,null));
 		b$0 || (t$2=imba.createElement('div',0,t$1,'player-current-label',"lot",null));
-		t$2 = c$0.z || (c$0.z = t$2=imba.createElement('div',4096,t$1,'player-current-score',null,null));
-		(imba.ctx=(c$0.aa$ || (c$0.aa$={_:t$2})),v$2=this.currentScore(),v$2===c$0.aa || (c$0.aa_ = t$2.insert$(c$0.aa=v$2,0,c$0.aa_)));
+		t$2 = c$0.p || (c$0.p = t$2=imba.createElement('div',4096,t$1,'player-current-score',null,null));
+		(imba.ctx=(c$0.q$ || (c$0.q$={_:t$2})),v$2=this.currentScore(),v$2===c$0.q || (c$0.q_ = t$2.insert$(c$0.q=v$2,0,c$0.q_)));
 		t$0.close$(d$0);
 		return t$0;
 	}
@@ -1253,47 +1260,47 @@ class PigGameComponent extends imba.tags.get('component','ImbaElement') {
 				return this.loseScore();
 			}		}	}
 	render(){
-		var t$0, c$0, b$0, d$0, t$1, t$2, b$2, d$2, t$3, b$3, d$3, t$4, v$3, ak$$2, al$$2;
+		var t$0, c$0, b$0, d$0, t$1, t$2, b$2, d$2, t$3, b$3, d$3, t$4, x$$2, y$$2, v$3;
 		t$0=this;
 		t$0.open$();
 		c$0 = (b$0=d$0=1,t$0.$) || (b$0=d$0=0,t$0.$={});
-		t$1 = c$0.ab || (c$0.ab = t$1=imba.createElement('div',1024,t$0,'wrapper clearfix',null,null));
-		t$2 = (b$2=d$2=1,c$0.ac) || (b$2=d$2=0,c$0.ac=t$2=imba.createComponent('player-panel',0,t$1,null,null,null));
+		t$1 = c$0.r || (c$0.r = t$1=imba.createElement('div',1024,t$0,'wrapper clearfix',null,null));
+		t$2 = (b$2=d$2=1,c$0.s) || (b$2=d$2=0,c$0.s=t$2=imba.createComponent('player-panel',0,t$1,null,null,null));
 		b$2 || (t$2.player=0);
 		b$2 || !t$2.setup || t$2.setup(d$2);
 		t$2.end$(d$2);
 		b$2 || t$2.insertInto$(t$1);
-		t$2 = (b$2=d$2=1,c$0.ad) || (b$2=d$2=0,c$0.ad=t$2=imba.createComponent('player-panel',0,t$1,null,null,null));
+		t$2 = (b$2=d$2=1,c$0.t) || (b$2=d$2=0,c$0.t=t$2=imba.createComponent('player-panel',0,t$1,null,null,null));
 		b$2 || (t$2.player=1);
 		b$2 || !t$2.setup || t$2.setup(d$2);
 		t$2.end$(d$2);
 		b$2 || t$2.insertInto$(t$1);
 		b$0 || (t$2=imba.createElement('div',0,t$1,'button-wrapper',null,null));
-		t$3 = (b$3=d$3=1,c$0.ae) || (b$3=d$3=0,c$0.ae=t$3=imba.createElement('button',0,t$2,'btn-new',null,null));
+		t$3 = (b$3=d$3=1,c$0.u) || (b$3=d$3=0,c$0.u=t$3=imba.createElement('button',0,t$2,'btn-new',null,null));
 		b$3 || (t$3.on$(`click`,{newGame: true},this));
 		b$3 || (t$4=imba.createElement('i',0,t$3,'fi-plus',null,null));
-		(v$3="New game",v$3===c$0.af || (c$0.af_ = t$3.insert$(c$0.af=v$3,0,c$0.af_)));
-		t$3 = (b$3=d$3=1,c$0.ag) || (b$3=d$3=0,c$0.ag=t$3=imba.createElement('button',0,t$2,'btn-roll',null,null));
+		b$3 || t$3.insert$("New game");
+		t$3 = (b$3=d$3=1,c$0.v) || (b$3=d$3=0,c$0.v=t$3=imba.createElement('button',0,t$2,'btn-roll',null,null));
 		b$3 || (t$3.on$(`click`,{rollDice: true},this));
 		b$3 || (t$4=imba.createElement('i',0,t$3,'fi-loop',null,null));
-		(v$3="Roll Dice",v$3===c$0.ah || (c$0.ah_ = t$3.insert$(c$0.ah=v$3,0,c$0.ah_)));
-		t$3 = (b$3=d$3=1,c$0.ai) || (b$3=d$3=0,c$0.ai=t$3=imba.createElement('button',0,t$2,'btn-roll',null,null));
+		b$3 || t$3.insert$("Roll Dice");
+		t$3 = (b$3=d$3=1,c$0.w) || (b$3=d$3=0,c$0.w=t$3=imba.createElement('button',0,t$2,'btn-roll',null,null));
 		b$3 || (t$3.on$(`click`,{holdScore: true},this));
 		b$3 || (t$4=imba.createElement('i',0,t$3,'fi-arrow-down',null,null));
-		(v$3="Hold",v$3===c$0.aj || (c$0.aj_ = t$3.insert$(c$0.aj=v$3,0,c$0.aj_)));
+		b$3 || t$3.insert$("Hold");
 		if (dice !== 0) {
-			ak$$2 = (b$3=d$3=1,c$0.ak) || (b$3=d$3=0,c$0.ak=ak$$2=imba.createElement('img',0,null,'dice',null,null));
-			b$3||(ak$$2.up$=t$1);
-			(v$3=("./images/dice-" + dice + ".png"),v$3===c$0.am || (ak$$2.src=c$0.am=v$3));
-			(v$3=("dice-" + dice),v$3===c$0.an || (ak$$2.alt=c$0.an=v$3));
+			x$$2 = (b$3=d$3=1,c$0.x) || (b$3=d$3=0,c$0.x=x$$2=imba.createElement('img',0,null,'dice',null,null));
+			b$3||(x$$2.up$=t$1);
+			(v$3=("./images/dice-" + dice + ".png"),v$3===c$0.z || (x$$2.src=c$0.z=v$3));
+			(v$3=("dice-" + dice),v$3===c$0.aa || (x$$2.alt=c$0.aa=v$3));
 		} else {
-			al$$2 = (b$3=d$3=1,c$0.al) || (b$3=d$3=0,c$0.al=al$$2=imba.createElement('img',0,null,'dice',null,null));
-			b$3||(al$$2.up$=t$1);
-			b$3 || (al$$2.src="./images/dice-1.png");
-			b$3 || (al$$2.alt="dice-1");
+			y$$2 = (b$3=d$3=1,c$0.y) || (b$3=d$3=0,c$0.y=y$$2=imba.createElement('img',0,null,'dice',null,null));
+			b$3||(y$$2.up$=t$1);
+			b$3 || (y$$2.src="./images/dice-1.png");
+			b$3 || (y$$2.alt="dice-1");
 		}
-		(c$0.ak$$2_ = t$1.insert$(ak$$2,1024,c$0.ak$$2_));
-		(c$0.al$$2_ = t$1.insert$(al$$2,1024,c$0.al$$2_));		t$2 = (b$2=d$2=1,c$0.ao) || (b$2=d$2=0,c$0.ao=t$2=imba.createComponent('game-info',0,t$1,null,null,null));
+		(c$0.x$$2_ = t$1.insert$(x$$2,1024,c$0.x$$2_));
+		(c$0.y$$2_ = t$1.insert$(y$$2,1024,c$0.y$$2_));		t$2 = (b$2=d$2=1,c$0.ab) || (b$2=d$2=0,c$0.ab=t$2=imba.createComponent('game-info',0,t$1,null,null,null));
 		b$2 || !t$2.setup || t$2.setup(d$2);
 		t$2.end$(d$2);
 		b$2 || t$2.insertInto$(t$1);
